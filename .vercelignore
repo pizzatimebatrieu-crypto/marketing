@@ -1,0 +1,5 @@
+.env
+.venv
+create_user.py
+supabase_web_users.sql
+README.md

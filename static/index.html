@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tổng hợp Facebook Page</title>
+<style>
+  :root { --bg:#f5f6f8; --card:#fff; --text:#1c1e21; --muted:#65676b; --line:#e4e6eb;
+          --c1:#1877f2; --c2:#f59e0b; --good:#188038; --bad:#d93025; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#16181a; --card:#212326; --text:#e8eaed; --muted:#9aa0a6; --line:#34373b;
+            --c1:#5b9cff; --c2:#fbbf24; --good:#5bd17a; --bad:#ff7b72; }
+  }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--text); font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif; }
+  header { background:var(--card); border-bottom:1px solid var(--line); padding:14px 20px;
+           display:flex; align-items:center; gap:12px; flex-wrap:wrap; position:sticky; top:0; z-index:5; }
+  header h1 { font-size:18px; margin:0; flex:1; min-width:200px; }
+  .seg { display:inline-flex; border:1px solid var(--line); border-radius:8px; overflow:hidden; }
+  .seg button { background:transparent; color:var(--text); border:0; padding:6px 14px; cursor:pointer; font:inherit; }
+  .seg button.on { background:var(--c1); color:#fff; }
+  main { max-width:1100px; margin:0 auto; padding:16px; display:grid; gap:16px; }
+  .grid { display:grid; gap:12px; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:14px 16px; }
+  .kpi .n { font-size:26px; font-weight:650; line-height:1.2; }
+  .kpi .l { color:var(--muted); font-size:13px; }
+  .kpi .d { font-size:13px; }
+  .up { color:var(--good); } .down { color:var(--bad); }
+  h2 { font-size:15px; margin:0 0 4px; }
+  .sub { color:var(--muted); font-size:13px; margin:0 0 10px; }
+  .two { display:grid; gap:16px; grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); }
+  .chart { position:relative; height:260px; }
+  .note { background:rgba(245,158,11,.12); border:1px solid var(--c2); border-radius:8px; padding:8px 12px; font-size:13px; }
+  table { width:100%; border-collapse:collapse; font-size:14px; }
+  th,td { padding:8px 6px; border-bottom:1px solid var(--line); text-align:right; vertical-align:top; }
+  th:first-child,td:first-child,th:nth-child(2),td:nth-child(2) { text-align:left; }
+  th { color:var(--muted); font-weight:500; font-size:12px; cursor:pointer; white-space:nowrap; user-select:none; }
+  tr.row { cursor:pointer; } tr.row:hover { background:rgba(127,127,127,.08); }
+  .msg { max-width:340px; }
+  .tbl { overflow-x:auto; }
+  a { color:var(--c1); text-decoration:none; } a:hover { text-decoration:underline; }
+  .muted { color:var(--muted); }
+  dialog { border:1px solid var(--line); border-radius:12px; background:var(--card); color:var(--text);
+           width:min(680px,94vw); padding:16px; }
+  dialog::backdrop { background:rgba(0,0,0,.45); }
+  .x { float:right; background:transparent; border:0; color:var(--muted); font-size:20px; cursor:pointer; }
+  #err { color:var(--bad); }
+</style>
+</head>
+<body>
+<header>
+  <h1>Tổng hợp Facebook Page <span class="muted" id="asof"></span></h1>
+  <div class="seg" id="range">
+    <button data-d="7">7 ngày</button><button data-d="30" class="on">30 ngày</button><button data-d="90">90 ngày</button>
+  </div>
+  <div class="seg"><button id="logout">Đăng xuất</button></div>
+</header>
+<main>
+  <div id="err"></div>
+  <div id="notes"></div>
+  <section class="grid" id="kpis"></section>
+
+  <section class="card">
+    <h2>Lượt xem page theo ngày</h2>
+    <p class="sub">Đường nét liền là từng ngày, đường nét đứt là trung bình 7 ngày.</p>
+    <div class="chart"><canvas id="cDaily"></canvas></div>
+  </section>
+
+  <section class="two">
+    <div class="card"><h2>Lượt xem trung bình theo loại bài</h2><p class="sub">Trung bình lượt xem mỗi bài (số bài ghi trong chú giải).</p>
+      <div class="chart"><canvas id="cType"></canvas></div></div>
+    <div class="card"><h2>Lượt xem trung bình theo thứ đăng</h2><p class="sub">Giờ Việt Nam. Mẫu ít bài thì chỉ mang tính tham khảo.</p>
+      <div class="chart"><canvas id="cWeek"></canvas></div></div>
+  </section>
+  <section class="card"><h2>Lượt xem trung bình theo khung giờ đăng</h2>
+    <p class="sub">Giờ Việt Nam. Chú ý số bài ở mỗi khung khi so sánh.</p>
+    <div class="chart"><canvas id="cSlot"></canvas></div></section>
+
+  <section class="card">
+    <h2>Các bài đăng</h2>
+    <p class="sub">Bấm tiêu đề cột để sắp xếp, bấm vào dòng để xem xu hướng của bài.</p>
+    <div class="tbl"><table id="tbl"><thead></thead><tbody></tbody></table></div>
+  </section>
+</main>
+
+<dialog id="dlg">
+  <button class="x" id="dlgX" aria-label="Đóng">×</button>
+  <h2 id="dlgT"></h2>
+  <p class="sub" id="dlgS"></p>
+  <div class="chart"><canvas id="cPost"></canvas></div>
+</dialog>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script>
+const $ = s => document.querySelector(s);
+const nf = new Intl.NumberFormat("vi-VN");
+const fmt = v => v == null ? "–" : nf.format(v);
+const pct = v => v == null ? "–" : (v * 100).toFixed(1).replace(".", ",") + "%";
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const charts = {};
+let DATA = null, days = 30, sortKey = "views", sortDir = -1;
+
+function draw(id, cfg) {
+  if (charts[id]) charts[id].destroy();
+  Chart.defaults.color = css("--muted");
+  Chart.defaults.borderColor = css("--line");
+  charts[id] = new Chart($("#" + id), cfg);
+}
+const baseOpts = { responsive: true, maintainAspectRatio: false,
+  plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } };
+
+async function api(path) {
+  const r = await fetch(path, { credentials: "same-origin" });
+  if (r.status === 401) { location.href = "/login"; throw new Error("Hết phiên đăng nhập"); }
+  if (!r.ok) { let m = r.statusText; try { m = (await r.json()).detail || m; } catch (e) {} throw new Error(m); }
+  return r.json();
+}
+
+async function load() {
+  $("#err").textContent = "";
+  try { DATA = await api("/api/summary?days=" + days); render(); }
+  catch (e) { $("#err").textContent = "Lỗi tải dữ liệu: " + e.message; }
+}
+
+function kpi(label, value, extra) {
+  return `<div class="card kpi"><div class="n">${value}</div><div class="l">${label}</div>${extra ? `<div class="d">${extra}</div>` : ""}</div>`;
+}
+
+function render() {
+  const k = DATA.kpi;
+  $("#asof").textContent = DATA.as_of ? "· cập nhật số liệu " + DATA.as_of : "";
+  $("#notes").innerHTML = DATA.notes.map(n => `<div class="note" style="margin-bottom:8px">${esc(n)}</div>`).join("");
+
+  let ch = "";
+  if (k.page_views_change_pct != null) {
+    const up = k.page_views_change_pct >= 0;
+    ch = `<span class="${up ? "up" : "down"}">${up ? "▲" : "▼"} ${Math.abs(k.page_views_change_pct).toFixed(1).replace(".", ",")}%</span> <span class="muted">so với ${days} ngày trước</span>`;
+  }
+  $("#kpis").innerHTML = [
+    kpi(`Lượt xem page (${days} ngày)`, fmt(k.page_views), ch),
+    kpi("Số bài đã đăng", fmt(k.posts)),
+    kpi("Tổng lượt xem các bài", fmt(k.post_views)),
+    kpi("Tổng người xem (cộng theo bài)", fmt(k.unique_sum), '<span class="muted">có thể trùng giữa các bài</span>'),
+    kpi("Lượt click", fmt(k.clicks)),
+    kpi("Tỉ lệ click / lượt xem", pct(k.ctr)),
+    kpi("Reaction", fmt(k.reactions)),
+    kpi("Bình luận", fmt(k.comments)),
+  ].join("");
+
+  const a = css("--c1"), b = css("--c2");
+  draw("cDaily", { type: "line", data: { labels: DATA.daily.map(d => d.day.slice(5).split("-").reverse().join("/")),
+    datasets: [
+      { label: "Lượt xem", data: DATA.daily.map(d => d.media_views), borderColor: a, backgroundColor: a + "22", fill: true, tension: .25, pointRadius: 2 },
+      { label: "TB 7 ngày", data: DATA.daily.map(d => d.ma7), borderColor: b, borderDash: [6, 4], pointRadius: 0, tension: .25 } ] },
+    options: { ...baseOpts, plugins: { legend: { display: true } } } });
+
+  const bar = (id, items, color) => draw(id, { type: "bar", data: {
+      labels: items.map(i => `${i.label} (${i.posts} bài)`),
+      datasets: [{ data: items.map(i => i.avg_views), backgroundColor: color, borderRadius: 4 }] }, options: baseOpts });
+  bar("cType", DATA.by_type, a); bar("cWeek", DATA.by_weekday, b); bar("cSlot", DATA.by_slot, a);
+
+  renderTable();
+}
+
+const COLS = [
+  ["created_time", "Ngày đăng", r => new Date(r.created_time).toLocaleDateString("vi-VN")],
+  ["message", "Nội dung", r => `<a href="${esc(r.url)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">${esc(r.message || "(không có chữ)")}</a>`],
+  ["type", "Loại", r => esc(r.type)],
+  ["views", "Lượt xem", r => fmt(r.views)],
+  ["unique", "Người xem", r => fmt(r.unique)],
+  ["clicks", "Click", r => fmt(r.clicks)],
+  ["ctr", "CTR", r => pct(r.ctr)],
+  ["reactions", "Reaction", r => fmt(r.reactions)],
+  ["comments", "Bình luận", r => fmt(r.comments)],
+  ["shares", "Chia sẻ", r => fmt(r.shares)],
+];
+
+function renderTable() {
+  $("#tbl thead").innerHTML = "<tr>" + COLS.map(c => `<th data-k="${c[0]}">${c[1]}${sortKey === c[0] ? (sortDir < 0 ? " ▼" : " ▲") : ""}</th>`).join("") + "</tr>";
+  const rows = [...DATA.posts].sort((x, y) => {
+    const a = x[sortKey], b = y[sortKey];
+    if (a == null && b == null) return 0; if (a == null) return 1; if (b == null) return -1;
+    return (a < b ? -1 : a > b ? 1 : 0) * sortDir;
+  });
+  $("#tbl tbody").innerHTML = rows.length ? rows.map((r, i) =>
+    `<tr class="row" data-i="${i}">` + COLS.map((c, j) => `<td${j === 1 ? ' class="msg"' : ""}>${c[2](r)}</td>`).join("") + "</tr>").join("")
+    : `<tr><td colspan="${COLS.length}" class="muted">Chưa có bài nào trong khoảng này.</td></tr>`;
+  $("#tbl tbody").onclick = e => { const tr = e.target.closest("tr.row"); if (tr) openPost(rows[+tr.dataset.i]); };
+  $("#tbl thead").onclick = e => { const th = e.target.closest("th"); if (!th) return;
+    const k = th.dataset.k; sortDir = sortKey === k ? -sortDir : -1; sortKey = k; renderTable(); };
+}
+
+async function openPost(r) {
+  $("#dlgT").textContent = r.message || "(không có chữ)";
+  $("#dlgS").textContent = "Đang tải…";
+  $("#dlg").showModal();
+  try {
+    const rows = await api("/api/post/" + encodeURIComponent(r.id));
+    $("#dlgS").textContent = rows.length < 2
+      ? "Mới có " + rows.length + " ngày snapshot. Cần chạy đồng bộ thêm vài ngày để thấy xu hướng."
+      : "Số liệu cộng dồn theo từng ngày chụp (snapshot).";
+    draw("cPost", { type: "line", data: { labels: rows.map(x => x.snapshot_date),
+      datasets: [
+        { label: "Lượt xem", data: rows.map(x => x.media_views), borderColor: css("--c1"), tension: .2 },
+        { label: "Người xem", data: rows.map(x => x.unique_viewers), borderColor: css("--c2"), tension: .2 } ] },
+      options: { ...baseOpts, plugins: { legend: { display: true } } } });
+  } catch (e) { $("#dlgS").textContent = "Lỗi: " + e.message; }
+}
+
+$("#logout").onclick = async () => { await fetch("/api/logout", { method: "POST" }); location.href = "/login"; };
+$("#dlgX").onclick = () => $("#dlg").close();
+$("#dlg").addEventListener("click", e => { if (e.target === $("#dlg")) $("#dlg").close(); });
+$("#range").onclick = e => { const b = e.target.closest("button"); if (!b) return;
+  document.querySelectorAll("#range button").forEach(x => x.classList.toggle("on", x === b));
+  days = +b.dataset.d; load(); };
+load();
+</script>
+</body>
+</html>

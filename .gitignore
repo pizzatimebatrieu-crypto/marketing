@@ -1,0 +1,5 @@
+cd /root/mar
+printf '.env\n.venv/\n__pycache__/\n.vercel/\n' > .gitignore
+git init -b main
+git add .
+git status
