@@ -50,13 +50,14 @@ def latest_metrics(metrics):
 def build_summary(posts, metrics, daily, days, today=None):
     today = today or datetime.now(VN).date()
     cutoff_dt = datetime.combine(today - timedelta(days=days - 1), datetime.min.time(), tzinfo=VN)
+    end_dt = datetime.combine(today + timedelta(days=1), datetime.min.time(), tzinfo=VN)
     last = latest_metrics(metrics)
 
     # ---- bai dang trong khoang
     rows = []
     for p in posts:
         ct = parse_dt(p.get("created_time"))
-        if not ct or ct < cutoff_dt:
+        if not ct or ct < cutoff_dt or ct >= end_dt:
             continue
         m = last.get(p["id"], {})
         views, uniq, clicks = _n(m.get("media_views")), _n(m.get("unique_viewers")), _n(m.get("clicks"))

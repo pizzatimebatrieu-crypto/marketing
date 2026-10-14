@@ -7,7 +7,7 @@ Bien moi truong: SUPABASE_URL, SUPABASE_SERVICE_KEY, SESSION_SECRET.
 import os
 import re
 import time
-from datetime import datetime, timedelta, timezone
+from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 
 import bcrypt
@@ -28,6 +28,7 @@ SESSION_DAYS = int(os.getenv("SESSION_DAYS", "7"))
 COOKIE_SECURE = bool(os.getenv("VERCEL")) or os.getenv("COOKIE_SECURE") == "1"
 COOKIE_NAME = "fb_session"
 MAX_FAILS, LOCK_MINUTES = 5, 15
+MAX_DAYS = 730
 CACHE_SECONDS = int(os.getenv("WEB_CACHE_SECONDS", "60"))
 
 _missing = [n for n, v in [("SUPABASE_URL", SB_URL), ("SUPABASE_SERVICE_KEY", SB_KEY),
@@ -158,11 +159,17 @@ def index(request: Request):
 
 
 @app.get("/api/summary", dependencies=[Depends(require_user)])
-def summary(days: int = 30):
-    days = max(1, min(days, 365))
+def summary(days: int = 30, start: date | None = None, end: date | None = None):
+    real_today = datetime.now(agg.VN).date()
+    end = min(end or real_today, real_today)
+    if start:
+        if start > end:
+            raise HTTPException(400, "Ngay bat dau phai truoc ngay ket thuc")
+        days = (end - start).days + 1
+    days = max(1, min(days, MAX_DAYS))
 
     def load():
-        today = datetime.now(agg.VN).date()
+        today = end
         since_post = (today - timedelta(days=days + 1)).isoformat()
         since_day = (today - timedelta(days=2 * days + 1)).isoformat()
         posts = sb_select("fb_posts", {"select": "id,message,post_type,created_time,permalink_url",
@@ -172,7 +179,7 @@ def summary(days: int = 30):
                                             "order": "day.asc"})
         return agg.build_summary(posts, metrics, daily, days, today)
 
-    return cached(("summary", days), load)
+    return cached(("summary", days, end), load)
 
 
 @app.get("/api/post/{post_id}", dependencies=[Depends(require_user)])

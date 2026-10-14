@@ -44,6 +44,7 @@
            width:min(680px,94vw); padding:16px; }
   dialog::backdrop { background:rgba(0,0,0,.45); }
   .x { float:right; background:transparent; border:0; color:var(--muted); font-size:20px; cursor:pointer; }
+  #custom input { background:var(--card); color:var(--text); border:1px solid var(--line); border-radius:6px; padding:3px 6px; font:inherit; }
   #err { color:var(--bad); }
 </style>
 </head>
@@ -51,7 +52,10 @@
 <header>
   <h1>Tổng hợp Facebook Page <span class="muted" id="asof"></span></h1>
   <div class="seg" id="range">
-    <button data-d="7">7 ngày</button><button data-d="30" class="on">30 ngày</button><button data-d="90">90 ngày</button>
+    <button data-d="7">7 ngày</button><button data-d="30" class="on">30 ngày</button><button data-d="90">90 ngày</button><button data-d="180">6 tháng</button><button data-d="365">1 năm</button><button data-d="custom">Tùy chọn</button>
+  </div>
+  <div id="custom" class="seg" style="display:none;padding:4px 8px;gap:6px;align-items:center">
+    <input type="date" id="dFrom"> – <input type="date" id="dTo"> <button id="dGo" style="background:var(--c1);color:#fff;border-radius:6px">Xem</button>
   </div>
   <div class="seg"><button id="logout">Đăng xuất</button></div>
 </header>
@@ -99,7 +103,7 @@ const pct = v => v == null ? "–" : (v * 100).toFixed(1).replace(".", ",") + "%
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
 const charts = {};
-let DATA = null, days = 30, sortKey = "views", sortDir = -1;
+let DATA = null, days = 30, from = null, to = null, sortKey = "views", sortDir = -1;
 
 function draw(id, cfg) {
   if (charts[id]) charts[id].destroy();
@@ -119,7 +123,7 @@ async function api(path) {
 
 async function load() {
   $("#err").textContent = "";
-  try { DATA = await api("/api/summary?days=" + days); render(); }
+  try { DATA = await api("/api/summary?" + (from ? `start=${from}&end=${to}` : "days=" + days)); days = DATA.range_days; render(); }
   catch (e) { $("#err").textContent = "Lỗi tải dữ liệu: " + e.message; }
 }
 
@@ -135,7 +139,7 @@ function render() {
   let ch = "";
   if (k.page_views_change_pct != null) {
     const up = k.page_views_change_pct >= 0;
-    ch = `<span class="${up ? "up" : "down"}">${up ? "▲" : "▼"} ${Math.abs(k.page_views_change_pct).toFixed(1).replace(".", ",")}%</span> <span class="muted">so với ${days} ngày trước</span>`;
+    ch = `<span class="${up ? "up" : "down"}">${up ? "▲" : "▼"} ${Math.abs(k.page_views_change_pct).toFixed(1).replace(".", ",")}%</span> <span class="muted">so với ${days} ngày trước đó</span>`;
   }
   $("#kpis").innerHTML = [
     kpi(`Lượt xem page (${days} ngày)`, fmt(k.page_views), ch),
@@ -211,9 +215,18 @@ async function openPost(r) {
 $("#logout").onclick = async () => { await fetch("/api/logout", { method: "POST" }); location.href = "/login"; };
 $("#dlgX").onclick = () => $("#dlg").close();
 $("#dlg").addEventListener("click", e => { if (e.target === $("#dlg")) $("#dlg").close(); });
+const iso = d => d.toISOString().slice(0, 10);
+$("#dTo").value = iso(new Date()); $("#dFrom").value = iso(new Date(Date.now() - 29 * 864e5));
 $("#range").onclick = e => { const b = e.target.closest("button"); if (!b) return;
   document.querySelectorAll("#range button").forEach(x => x.classList.toggle("on", x === b));
-  days = +b.dataset.d; load(); };
+  const custom = b.dataset.d === "custom";
+  $("#custom").style.display = custom ? "inline-flex" : "none";
+  if (custom) return;
+  from = to = null; days = +b.dataset.d; load(); };
+$("#dGo").onclick = () => {
+  if (!$("#dFrom").value || !$("#dTo").value) return;
+  if ($("#dFrom").value > $("#dTo").value) { $("#err").textContent = "Ngày bắt đầu phải trước ngày kết thúc"; return; }
+  from = $("#dFrom").value; to = $("#dTo").value; load(); };
 load();
 </script>
 </body>
