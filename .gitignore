@@ -1,5 +1,7 @@
-cd /root/mar
-printf '.env\n.venv/\n__pycache__/\n.vercel/\n' > .gitignore
-git init -b main
-git add .
-git status
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.env
+.env.*
+!.env.example
