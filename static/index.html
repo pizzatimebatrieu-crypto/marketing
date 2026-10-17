@@ -18,6 +18,14 @@
   header h1 { font-size:18px; margin:0; flex:1; min-width:200px; }
   .seg { display:inline-flex; border:1px solid var(--line); border-radius:8px; overflow:hidden; }
   .seg button { background:transparent; color:var(--text); border:0; padding:6px 14px; cursor:pointer; font:inherit; }
+  .pick { max-width:760px; margin:48px auto; padding:0 16px; text-align:center; }
+  .pick h1 { font-size:22px; margin:0 0 20px; }
+  .pick .opts { display:grid; gap:14px; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); }
+  .pick button { background:var(--card); color:var(--text); border:1px solid var(--line); border-radius:14px;
+                 padding:28px 16px; cursor:pointer; font:inherit; font-size:17px; font-weight:650; }
+  .pick button:hover { border-color:var(--c1); }
+  .pick button small { display:block; color:var(--muted); font-weight:400; font-size:13px; margin-top:4px; }
+  #empty { text-align:center; padding:40px 16px; }
   .seg button.on { background:var(--c1); color:#fff; }
   main { max-width:1100px; margin:0 auto; padding:16px; display:grid; gap:16px; }
   .grid { display:grid; gap:12px; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); }
@@ -49,18 +57,28 @@
 </style>
 </head>
 <body>
+<div class="pick" id="pick"><h1>Chọn trang để xem số liệu marketing</h1><div class="opts" id="opts"></div>
+  <p><a href="#" id="logout2" class="muted">Đăng xuất</a></p></div>
+<div id="app" style="display:none">
 <header>
-  <h1>Tổng hợp Facebook Page <span class="muted" id="asof"></span></h1>
+  <h1><span id="pname">Tổng hợp Facebook Page</span> <span class="muted" id="asof"></span></h1>
   <div class="seg" id="range">
     <button data-d="7">7 ngày</button><button data-d="30" class="on">30 ngày</button><button data-d="90">90 ngày</button><button data-d="180">6 tháng</button><button data-d="365">1 năm</button><button data-d="custom">Tùy chọn</button>
+<<<<<<< HEAD
+  </div>
+  <div id="custom" class="seg" style="display:none;padding:4px 8px;gap:6px;align-items:center">
+    <input type="date" id="dFrom"> – <input type="date" id="dTo"> <button id="dGo" style="background:var(--c1);color:#fff;border-radius:6px">Xem</button>
+=======
+>>>>>>> chia thanh 3 tab, cap nhat du lieu tiktok va tuy hoa
   </div>
   <div id="custom" class="seg" style="display:none;padding:4px 8px;gap:6px;align-items:center">
     <input type="date" id="dFrom"> – <input type="date" id="dTo"> <button id="dGo" style="background:var(--c1);color:#fff;border-radius:6px">Xem</button>
   </div>
-  <div class="seg"><button id="logout">Đăng xuất</button></div>
+  <div class="seg"><button id="back">← Chọn trang</button><button id="logout">Đăng xuất</button></div>
 </header>
-<main>
-  <div id="err"></div>
+<div id="err" style="max-width:1100px;margin:8px auto;padding:0 16px"></div>
+<div id="empty" class="muted" style="display:none"></div>
+<main id="main">
   <div id="notes"></div>
   <section class="grid" id="kpis"></section>
 
@@ -86,6 +104,26 @@
     <div class="tbl"><table id="tbl"><thead></thead><tbody></tbody></table></div>
   </section>
 </main>
+<main id="ttmain" style="display:none">
+  <div id="ttnotes"></div>
+  <section class="grid" id="ttkpis"></section>
+  <section class="card"><h2>Lượt xem video theo ngày</h2>
+    <p class="sub">Đường nét liền là từng ngày, đường nét đứt là trung bình 7 ngày.</p>
+    <div class="chart"><canvas id="tDaily"></canvas></div></section>
+  <section class="card"><h2>Tương tác theo ngày</h2>
+    <p class="sub">Lượt thích, bình luận và chia sẻ cộng dồn mỗi ngày.</p>
+    <div class="chart"><canvas id="tInter"></canvas></div></section>
+  <section class="two">
+    <div class="card"><h2>Lượt xem trung bình theo thứ</h2><p class="sub">Trung bình mỗi ngày trong khoảng đã chọn.</p>
+      <div class="chart"><canvas id="tWeek"></canvas></div></div>
+    <div class="card"><h2>Tổng lượt xem theo tháng</h2><p class="sub">Tháng đầu/cuối có thể chưa đủ ngày.</p>
+      <div class="chart"><canvas id="tMonth"></canvas></div></div>
+  </section>
+  <section class="card"><h2>10 ngày nhiều lượt xem nhất</h2>
+    <p class="sub">Dùng để xem ngày nào video nổi để rút kinh nghiệm nội dung.</p>
+    <div class="tbl"><table id="ttop"></table></div></section>
+</main>
+</div>
 
 <dialog id="dlg">
   <button class="x" id="dlgX" aria-label="Đóng">×</button>
@@ -103,7 +141,11 @@ const pct = v => v == null ? "–" : (v * 100).toFixed(1).replace(".", ",") + "%
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
 const charts = {};
+<<<<<<< HEAD
 let DATA = null, days = 30, from = null, to = null, sortKey = "views", sortDir = -1;
+=======
+let DATA = null, PAGES = [], page = null, days = 30, from = null, to = null, sortKey = "views", sortDir = -1;
+>>>>>>> chia thanh 3 tab, cap nhat du lieu tiktok va tuy hoa
 
 function draw(id, cfg) {
   if (charts[id]) charts[id].destroy();
@@ -121,11 +163,83 @@ async function api(path) {
   return r.json();
 }
 
+const dm = d => d.slice(5).split("-").reverse().join("/");
+function renderTikTok(T) {
+  if (T.empty) { $("#ttkpis").innerHTML = ""; $("#ttnotes").innerHTML = '<div class="note">Chưa có dữ liệu TikTok.</div>'; return; }
+  const k = T.kpi, c = k.change || {};
+  $("#asof").textContent = "· dữ liệu đến " + dm(T.as_of) + "/" + T.as_of.slice(0, 4);
+  $("#ttnotes").innerHTML = T.notes.map(n => `<div class="note" style="margin-bottom:8px">${esc(n)}</div>`).join("");
+  const ch = key => c[key] == null ? "" : `<span class="${c[key] >= 0 ? "up" : "down"}">${c[key] >= 0 ? "▲" : "▼"} ${Math.abs(c[key]).toFixed(1).replace(".", ",")}%</span> <span class="muted">so với ${days} ngày trước</span>`;
+  $("#ttkpis").innerHTML = [
+    kpi(`Lượt xem video (${days} ngày)`, fmt(k.views), ch("views")),
+    kpi("Lượt xem TB mỗi ngày", fmt(Math.round(k.avg_views || 0))),
+    kpi("Lượt xem trang cá nhân", fmt(k.profile), ch("profile")),
+    kpi("Tỉ lệ vào trang / lượt xem", pct(k.profile_rate)),
+    kpi("Lượt thích", fmt(k.likes), ch("likes")),
+    kpi("Bình luận", fmt(k.comments), ch("comments")),
+    kpi("Chia sẻ", fmt(k.shares), ch("shares")),
+    kpi("Tỉ lệ tương tác / lượt xem", pct(k.engagement), ch("interactions")),
+  ].join("");
+  const a = css("--c1"), b = css("--c2"), g = css("--good");
+  const labels = T.daily.map(d => dm(d.day));
+  draw("tDaily", { type: "line", data: { labels, datasets: [
+    { label: "Lượt xem", data: T.daily.map(d => d.views), borderColor: a, backgroundColor: a + "22", fill: true, tension: .25, pointRadius: 1 },
+    { label: "TB 7 ngày", data: T.daily.map(d => d.ma7), borderColor: b, borderDash: [6, 4], pointRadius: 0, tension: .25 } ] },
+    options: { ...baseOpts, plugins: { legend: { display: true } } } });
+  const stk = { ...baseOpts, plugins: { legend: { display: true } }, scales: { x: { stacked: true }, y: { stacked: true, beginAtZero: true } } };
+  draw("tInter", { type: "bar", data: { labels, datasets: [
+    { label: "Thích", data: T.daily.map(d => d.likes), backgroundColor: a },
+    { label: "Chia sẻ", data: T.daily.map(d => d.shares), backgroundColor: b },
+    { label: "Bình luận", data: T.daily.map(d => d.comments), backgroundColor: g } ] }, options: stk });
+  draw("tWeek", { type: "bar", data: { labels: T.by_weekday.map(i => i.label),
+    datasets: [{ data: T.by_weekday.map(i => i.avg_views), backgroundColor: b, borderRadius: 4 }] }, options: baseOpts });
+  draw("tMonth", { type: "bar", data: { labels: T.by_month.map(i => i.month.split("-").reverse().join("/")),
+    datasets: [{ data: T.by_month.map(i => i.views), backgroundColor: a, borderRadius: 4 }] }, options: baseOpts });
+  $("#ttop").innerHTML = "<thead><tr><th>Ngày</th><th></th><th>Lượt xem</th><th>Trang cá nhân</th><th>Thích</th><th>Bình luận</th><th>Chia sẻ</th></tr></thead><tbody>" +
+    T.top_days.map(r => `<tr><td>${dm(r.day)}/${r.day.slice(0, 4)}</td><td></td><td>${fmt(r.views)}</td><td>${fmt(r.profile)}</td><td>${fmt(r.likes)}</td><td>${fmt(r.comments)}</td><td>${fmt(r.shares)}</td></tr>`).join("") + "</tbody>";
+}
+
 async function load() {
   $("#err").textContent = "";
+<<<<<<< HEAD
   try { DATA = await api("/api/summary?" + (from ? `start=${from}&end=${to}` : "days=" + days)); days = DATA.range_days; render(); }
+=======
+  if (page === "tiktok") {
+    try { const T = await api("/api/tiktok?" + (from ? `start=${from}&end=${to}` : "days=" + days)); if (T.range_days) days = T.range_days; renderTikTok(T); }
+    catch (e) { $("#err").textContent = "Lỗi tải dữ liệu: " + e.message; }
+    return;
+  }
+  try { DATA = await api(`/api/summary?page=${page}&` + (from ? `start=${from}&end=${to}` : "days=" + days)); days = DATA.range_days; render(); }
+>>>>>>> chia thanh 3 tab, cap nhat du lieu tiktok va tuy hoa
   catch (e) { $("#err").textContent = "Lỗi tải dữ liệu: " + e.message; }
 }
+
+function renderPicker() {
+  $("#opts").innerHTML = PAGES.map(p => `<button data-k="${p.key}">${esc(p.name)}${p.configured ? "" : "<small>Chưa kết nối dữ liệu</small>"}</button>`).join("");
+}
+function showPicker() {
+  page = null; DATA = null; document.title = "Tổng hợp Marketing";
+  $("#app").style.display = "none"; $("#pick").style.display = ""; $("#err").textContent = "";
+}
+function openPage(key) {
+  page = key;
+  const cur = PAGES.find(p => p.key === key);
+  $("#pname").textContent = cur.name;
+  document.title = cur.name + " – Tổng hợp Marketing";
+  $("#pick").style.display = "none"; $("#app").style.display = "";
+  const ok = cur.configured, tt = key === "tiktok";
+  $("#asof").textContent = "";
+  $("#main").style.display = ok && !tt ? "" : "none";
+  $("#ttmain").style.display = ok && tt ? "" : "none";
+  $("#range").style.display = ok ? "" : "none";
+  $("#custom").style.display = "none";
+  $("#empty").style.display = ok ? "none" : "";
+  $("#empty").textContent = ok ? "" : "Chưa có dữ liệu cho " + cur.name + ".";
+  if (ok) load();
+}
+$("#opts").onclick = e => { const b = e.target.closest("button"); if (b) openPage(b.dataset.k); };
+$("#back").onclick = showPicker;
+$("#logout2").onclick = e => { e.preventDefault(); $("#logout").click(); };
 
 function kpi(label, value, extra) {
   return `<div class="card kpi"><div class="n">${value}</div><div class="l">${label}</div>${extra ? `<div class="d">${extra}</div>` : ""}</div>`;
@@ -227,7 +341,14 @@ $("#dGo").onclick = () => {
   if (!$("#dFrom").value || !$("#dTo").value) return;
   if ($("#dFrom").value > $("#dTo").value) { $("#err").textContent = "Ngày bắt đầu phải trước ngày kết thúc"; return; }
   from = $("#dFrom").value; to = $("#dTo").value; load(); };
+<<<<<<< HEAD
 load();
+=======
+(async () => {
+  try { PAGES = await api("/api/pages"); } catch (e) {}
+  renderPicker();
+})();
+>>>>>>> chia thanh 3 tab, cap nhat du lieu tiktok va tuy hoa
 </script>
 </body>
 </html>

@@ -19,6 +19,7 @@ from fastapi.responses import FileResponse, JSONResponse, RedirectResponse
 from pydantic import BaseModel, Field
 
 import agg
+import tiktok
 
 load_dotenv()
 SB_URL = os.getenv("SUPABASE_URL", "").rstrip("/")
@@ -30,6 +31,13 @@ COOKIE_NAME = "fb_session"
 MAX_FAILS, LOCK_MINUTES = 5, 15
 MAX_DAYS = 730
 CACHE_SECONDS = int(os.getenv("WEB_CACHE_SECONDS", "60"))
+# key -> (ten hien thi, Facebook page id). Page Quy Nhon dung FB_PAGE_ID cu.
+PAGES = {
+    "quynhon": ("Pizza Time - Quy Nhơn", os.getenv("FB_PAGE_ID_QUYNHON") or os.getenv("FB_PAGE_ID", "")),
+    "tuyhoa": ("Pizza Time - Tuy Hòa", os.getenv("FB_PAGE_ID_TUYHOA", "")),
+    "tiktok": ("TikTok", "csv"),  # du lieu doc tu data/data-tiktok.csv
+}
+DEFAULT_PAGE = "quynhon"
 
 _missing = [n for n, v in [("SUPABASE_URL", SB_URL), ("SUPABASE_SERVICE_KEY", SB_KEY),
                            ("SESSION_SECRET", SESSION_SECRET)] if not v]
@@ -158,8 +166,28 @@ def index(request: Request):
     return FileResponse(STATIC / "index.html")
 
 
+def page_id_of(page: str) -> str:
+    if page not in PAGES:
+        raise HTTPException(400, "page khong hop le")
+    pid = PAGES[page][1]
+    if not pid or not re.fullmatch(r"[0-9]{5,32}", pid):
+        raise HTTPException(400, f"Chua cau hinh page id cho {PAGES[page][0]}")
+    return pid
+
+
+@app.get("/api/pages", dependencies=[Depends(require_user)])
+def pages():
+    return [{"key": k, "name": v[0], "configured": bool(v[1])} for k, v in PAGES.items()]
+
+
 @app.get("/api/summary", dependencies=[Depends(require_user)])
+<<<<<<< HEAD
 def summary(days: int = 30, start: date | None = None, end: date | None = None):
+=======
+def summary(days: int = 30, start: date | None = None, end: date | None = None,
+            page: str = DEFAULT_PAGE):
+    page_id = page_id_of(page)
+>>>>>>> chia thanh 3 tab, cap nhat du lieu tiktok va tuy hoa
     real_today = datetime.now(agg.VN).date()
     end = min(end or real_today, real_today)
     if start:
@@ -173,13 +201,29 @@ def summary(days: int = 30, start: date | None = None, end: date | None = None):
         since_post = (today - timedelta(days=days + 1)).isoformat()
         since_day = (today - timedelta(days=2 * days + 1)).isoformat()
         posts = sb_select("fb_posts", {"select": "id,message,post_type,created_time,permalink_url",
-                                       "created_time": f"gte.{since_post}", "order": "created_time.desc"})
-        metrics = sb_select("fb_post_metrics", {"select": "*", "order": "snapshot_date.asc"})
+                                       "created_time": f"gte.{since_post}", "id": f"like.{page_id}_*",
+                                       "order": "created_time.desc"})
+        metrics = sb_select("fb_post_metrics", {"select": "*", "post_id": f"like.{page_id}_*",
+                                                "order": "snapshot_date.asc"})
         daily = sb_select("fb_page_daily", {"select": "day,media_views", "day": f"gte.{since_day}",
-                                            "order": "day.asc"})
+                                            "page_id": f"eq.{page_id}", "order": "day.asc"})
         return agg.build_summary(posts, metrics, daily, days, today)
 
+<<<<<<< HEAD
     return cached(("summary", days, end), load)
+=======
+    return cached(("summary", page_id, days, end), load)
+
+
+@app.get("/api/tiktok", dependencies=[Depends(require_user)])
+def tiktok_summary(days: int = 30, start: date | None = None, end: date | None = None):
+    today = datetime.now(agg.VN).date()
+    if start and end and start > end:
+        raise HTTPException(400, "Ngay bat dau phai truoc ngay ket thuc")
+    days = max(1, min(days, MAX_DAYS))
+    return cached(("tiktok", days, start, end, today),
+                  lambda: tiktok.build_summary(today, days, start, end))
+>>>>>>> chia thanh 3 tab, cap nhat du lieu tiktok va tuy hoa
 
 
 @app.get("/api/post/{post_id}", dependencies=[Depends(require_user)])

@@ -2,7 +2,11 @@
 """Dong bo bai dang + so lieu Facebook Page vao Supabase.
 
 Ghi vao 3 bang: fb_posts, fb_post_metrics, fb_page_daily.
+<<<<<<< HEAD
 Chay:  python fb_to_supabase.py [--days 30] [--dry-run] [--skip-metrics]
+=======
+Chay:  python fb_to_supabase.py [--page quynhon|tuyhoa] [--days 30] [--dry-run] [--skip-metrics]
+>>>>>>> chia thanh 3 tab, cap nhat du lieu tiktok va tuy hoa
 """
 import argparse
 import hashlib
@@ -214,7 +218,11 @@ def fetch_page_daily(days: int) -> list[dict]:
                     day = (t - timedelta(days=PAGE_DAILY_SHIFT_DAYS)).astimezone(timezone.utc).date()
                     rows[day.isoformat()] = int(v["value"])
         cur = nxt
+<<<<<<< HEAD
     return [{"day": d, "media_views": v} for d, v in sorted(rows.items())]
+=======
+    return [{"page_id": PAGE_ID, "day": d, "media_views": v} for d, v in sorted(rows.items())]
+>>>>>>> chia thanh 3 tab, cap nhat du lieu tiktok va tuy hoa
 
 
 # ---------------------------------------------------------------- Supabase --
@@ -286,7 +294,11 @@ def run(days: int, dry: bool, skip_metrics: bool) -> int:
         if i % 20 == 0:
             log.info("  insights %d/%d", i, len(posts))
 
+<<<<<<< HEAD
     daily = fetch_page_daily(max(days, 30))
+=======
+    daily = fetch_page_daily(min(max(days * 2, 30), 700))  # x2 de co ky truoc so sanh
+>>>>>>> chia thanh 3 tab, cap nhat du lieu tiktok va tuy hoa
     log.info("Page daily: %d ngay", len(daily))
 
     if dry:
@@ -300,7 +312,11 @@ def run(days: int, dry: bool, skip_metrics: bool) -> int:
     # 2) bai da co: cap nhat noi dung/loai/link, KHONG dong vao cot store
     sb_upsert("fb_posts", base_rows, "id")
     sb_upsert("fb_post_metrics", metric_rows, "post_id,snapshot_date")
+<<<<<<< HEAD
     sb_upsert("fb_page_daily", daily, "day")
+=======
+    sb_upsert("fb_page_daily", daily, "page_id,day")
+>>>>>>> chia thanh 3 tab, cap nhat du lieu tiktok va tuy hoa
     bad = [m for m, n in _metric_fail.items() if n >= 5 and m not in _metric_ok]
     if bad:
         log.warning("Metric khong lay duoc (de NULL): %s - sua POST_METRICS neu Meta da doi ten", bad)
@@ -310,6 +326,11 @@ def run(days: int, dry: bool, skip_metrics: bool) -> int:
 
 def main() -> int:
     ap = argparse.ArgumentParser()
+<<<<<<< HEAD
+=======
+    ap.add_argument("--page", choices=["quynhon", "tuyhoa"], default="quynhon",
+                    help="page can dong bo; doc FB_PAGE_ID_<PAGE>/FB_PAGE_TOKEN_<PAGE> trong .env")
+>>>>>>> chia thanh 3 tab, cap nhat du lieu tiktok va tuy hoa
     ap.add_argument("--days", type=int, default=30, help="so ngay bai dang gan nhat (mac dinh 30)")
     ap.add_argument("--dry-run", action="store_true", help="chi doc Facebook, khong ghi Supabase")
     ap.add_argument("--skip-metrics", action="store_true", help="bo qua insights tung bai (chay nhanh)")
@@ -317,6 +338,13 @@ def main() -> int:
     a = ap.parse_args()
     logging.basicConfig(level=logging.DEBUG if a.verbose else logging.INFO,
                         format="%(asctime)s %(levelname)s %(message)s")
+<<<<<<< HEAD
+=======
+    global PAGE_ID, PAGE_TOKEN
+    suffix = a.page.upper()
+    PAGE_ID = os.getenv(f"FB_PAGE_ID_{suffix}") or (os.getenv("FB_PAGE_ID", "") if a.page == "quynhon" else "")
+    PAGE_TOKEN = os.getenv(f"FB_PAGE_TOKEN_{suffix}") or (os.getenv("FB_PAGE_TOKEN", "") if a.page == "quynhon" else "")
+>>>>>>> chia thanh 3 tab, cap nhat du lieu tiktok va tuy hoa
     try:
         return run(a.days, a.dry_run, a.skip_metrics)
     except (FBError, RuntimeError, requests.RequestException) as e:
