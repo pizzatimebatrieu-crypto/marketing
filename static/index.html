@@ -64,7 +64,6 @@
   <h1><span id="pname">Tổng hợp Facebook Page</span> <span class="muted" id="asof"></span></h1>
   <div class="seg" id="range">
     <button data-d="7">7 ngày</button><button data-d="30" class="on">30 ngày</button><button data-d="90">90 ngày</button><button data-d="180">6 tháng</button><button data-d="365">1 năm</button><button data-d="custom">Tùy chọn</button>
-<<<<<<< HEAD
   </div>
   <div id="custom" class="seg" style="display:none;padding:4px 8px;gap:6px;align-items:center">
     <input type="date" id="dFrom"> – <input type="date" id="dTo"> <button id="dGo" style="background:var(--c1);color:#fff;border-radius:6px">Xem</button>
@@ -141,7 +140,6 @@ const pct = v => v == null ? "–" : (v * 100).toFixed(1).replace(".", ",") + "%
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
 const charts = {};
-<<<<<<< HEAD
 let DATA = null, days = 30, from = null, to = null, sortKey = "views", sortDir = -1;
 =======
 let DATA = null, PAGES = [], page = null, days = 30, from = null, to = null, sortKey = "views", sortDir = -1;
@@ -201,7 +199,6 @@ function renderTikTok(T) {
 
 async function load() {
   $("#err").textContent = "";
-<<<<<<< HEAD
   try { DATA = await api("/api/summary?" + (from ? `start=${from}&end=${to}` : "days=" + days)); days = DATA.range_days; render(); }
 =======
   if (page === "tiktok") {
@@ -341,7 +338,6 @@ $("#dGo").onclick = () => {
   if (!$("#dFrom").value || !$("#dTo").value) return;
   if ($("#dFrom").value > $("#dTo").value) { $("#err").textContent = "Ngày bắt đầu phải trước ngày kết thúc"; return; }
   from = $("#dFrom").value; to = $("#dTo").value; load(); };
-<<<<<<< HEAD
 load();
 =======
 (async () => {

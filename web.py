@@ -181,8 +181,6 @@ def pages():
 
 
 @app.get("/api/summary", dependencies=[Depends(require_user)])
-<<<<<<< HEAD
-cd /root/mar
 
 printf '.env\n.venv/\n__pycache__/\n.vercel/\n' > .gitignore
 git init -b main
@@ -219,8 +217,6 @@ def summary(days: int = 30, start: date | None = None, end: date | None = None,
                                             "page_id": f"eq.{page_id}", "order": "day.asc"})
         return agg.build_summary(posts, metrics, daily, days, today)
 
-<<<<<<< HEAD
-cd /root/mar
 printf '.env\n.venv/\n__pycache__/\n.vercel/\n' > .gitignore
 git init -b main
 git add .
