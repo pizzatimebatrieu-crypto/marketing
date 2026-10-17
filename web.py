@@ -182,6 +182,16 @@ def pages():
 
 @app.get("/api/summary", dependencies=[Depends(require_user)])
 <<<<<<< HEAD
+cd /root/mar
+
+printf '.env\n.venv/\n__pycache__/\n.vercel/\n' > .gitignore
+git init -b main
+git add .
+git status
+printf '.env\n.venv/\n__pycache__/\n.vercel/\n' > .gitignore
+git init -b main
+git add .
+git status
 def summary(days: int = 30, start: date | None = None, end: date | None = None):
 =======
 def summary(days: int = 30, start: date | None = None, end: date | None = None,
@@ -210,6 +220,19 @@ def summary(days: int = 30, start: date | None = None, end: date | None = None,
         return agg.build_summary(posts, metrics, daily, days, today)
 
 <<<<<<< HEAD
+cd /root/mar
+printf '.env\n.venv/\n__pycache__/\n.vercel/\n' > .gitignore
+git init -b main
+git add .
+git status
+printf '.env\n.venv/\n__pycache__/\n.vercel/\n' > .gitignore
+git init -b main
+git add .
+git status
+printf '.env\n.venv/\n__pycache__/\n.vercel/\n' > .gitignore
+git init -b main
+git add .
+git status
     return cached(("summary", days, end), load)
 =======
     return cached(("summary", page_id, days, end), load)
