@@ -37,7 +37,7 @@ CACHE_SECONDS = int(os.getenv("WEB_CACHE_SECONDS", "60"))
 PAGES = {
     "quynhon": ("Pizza Time - Quy Nhơn", os.getenv("FB_PAGE_ID_QUYNHON") or os.getenv("FB_PAGE_ID", "")),
     "tuyhoa": ("Pizza Time - Tuy Hòa", os.getenv("FB_PAGE_ID_TUYHOA", "")),
-    "tiktok": ("TikTok", "csv"),  # du lieu doc tu data/data-tiktok.csv
+    "tiktok": ("TikTok", "csv"),  # du lieu doc tu bang tiktok_daily (Supabase)
 }
 DEFAULT_PAGE = "quynhon"
 
@@ -250,8 +250,12 @@ def tiktok_summary(days: int = 30, start: date | None = None, end: date | None =
     if start and end and start > end:
         raise HTTPException(400, "Ngay bat dau phai truoc ngay ket thuc")
     days = max(1, min(days, MAX_DAYS))
-    return cached(("tiktok", days, start, end, today),
-                  lambda: tiktok.build_summary(today, days, start, end))
+
+    def load():
+        rows = sb_select("tiktok_daily", {"select": "*", "order": "day.asc"})
+        return tiktok.build_summary(tiktok.from_db(rows), today, days, start, end)
+
+    return cached(("tiktok", days, start, end, today), load)
 
 
 @app.get("/api/post/{post_id}", dependencies=[Depends(require_user)])

@@ -1,8 +1,9 @@
-"""Doc data/data-tiktok.csv (xuat tu TikTok Studio) va tinh so lieu tong hop."""
+"""Doc data/data-tiktok.csv (xuat tu TikTok Studio) de day len Supabase, va tinh so lieu tong hop."""
 import csv
-from datetime import date, datetime, timedelta
+from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 
+VN = timezone(timedelta(hours=7))
 CSV_PATH = Path(__file__).parent / "data" / "data-tiktok.csv"
 MONTHS = {"Một": 1, "Hai": 2, "Ba": 3, "Tư": 4, "Năm": 5, "Sáu": 6, "Bảy": 7,
           "Tám": 8, "Chín": 9, "Mười": 10, "Mười Một": 11, "Mười Hai": 12}
@@ -17,10 +18,10 @@ def _int(x):
         return 0
 
 
-def load_rows(today: date) -> list[dict]:
+def parse_csv(path: Path, today: date) -> list[dict]:
     """File khong ghi nam: dong cuoi la ngay moi nhat (khong sau hom nay), lui dan de suy ra nam."""
     raw = []
-    with open(CSV_PATH, encoding="utf-8-sig", newline="") as f:
+    with open(path, encoding="utf-8-sig", newline="") as f:
         for r in csv.DictReader(f):
             d, _, m = (r.get("Date") or "").strip().partition(" tháng ")
             if not d.isdigit() or m.strip() not in MONTHS:
@@ -57,8 +58,13 @@ def _ratio(a, b):
     return a / b if b else None
 
 
-def build_summary(today: date, days: int, start: date | None, end: date | None) -> dict:
-    rows = load_rows(today)
+def from_db(db_rows: list[dict]) -> list[dict]:
+    """Dong tu bang tiktok_daily (Supabase) -> cung dang voi parse_csv."""
+    return [{"date": date.fromisoformat(r["day"]), "views": r["video_views"], "profile": r["profile_views"],
+             "likes": r["likes"], "comments": r["comments"], "shares": r["shares"]} for r in db_rows]
+
+
+def build_summary(rows: list[dict], today: date, days: int, start: date | None, end: date | None) -> dict:
     if not rows:
         return {"empty": True}
     first, last = rows[0]["date"], rows[-1]["date"]
