@@ -1,0 +1,10 @@
+{
+  "url": "https://www.tiktok.com/tiktok/v1/creator/m10n_center/reward_analytics",
+  "data": {
+    "log_pb": {
+      "impr_id": "202610181758072476314B5FA3690F4E85"
+    },
+    "status_code": 3016030,
+    "status_msg": "Invalid parameters"
+  }
+}

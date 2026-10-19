@@ -1,0 +1,22 @@
+{
+  "url": "https://www.tiktok.com/tiktok/v1/analytics/insights/?type_requests=[%7B%22insight_type%22:82,%22data_date_range%22:1%7D]&time_offset=25200&is_dark_mode=false",
+  "data": {
+    "article_links_ctr": {
+      "message": {
+        "data_source": 2,
+        "status": 9,
+        "timestamp": 1792317487
+      }
+    },
+    "extra": {
+      "fatal_item_ids": [],
+      "logid": "202610181758076BD6AE4703266D275D41",
+      "now": 1792317487000
+    },
+    "log_pb": {
+      "impr_id": "202610181758076BD6AE4703266D275D41"
+    },
+    "status_code": 0,
+    "status_msg": ""
+  }
+}

@@ -1,0 +1,465 @@
+{
+  "url": "https://www.tiktok.com/api/compliance/settings/?aid=1988&app_language=en&app_name=tiktok_web&browser_language=en-US&browser_name=Mozilla&browser_online=true&browser_platform=Linux%20x86_64&browser_version=5.0%20%28X11%3B%20Linux%20x86_64%29%20AppleWebKit%2F537.36%20%28KHTML%2C%20like%20Gecko%29%20Chrome%2F156.0.0.0%20Safari%2F537.36&channel=tiktok_web&cookie_enabled=true&data_collection_enabled=false&device_id=7697944949812299271&device_platform=web_pc&focus_state=true&fromWeb=1&from_page=&history_len=3&is_fullscreen=false&is_page_visible=true&os=linux&priority_region=&referer=https%3A%2F%2Fwww.tiktok.com%2Ftiktokstudio%2Fanalytics&region=VN&root_referer=https%3A%2F%2Fwww.tiktok.com%2Ftiktokstudio%2Fanalytics&screen_height=900&screen_width=1400&tz_name=Asia%2FSaigon&user_is_login=false&webcast_language=en",
+  "data": {
+    "ad_personality_settings": {
+      "is_show_disconnect_adv": true,
+      "pers_ad_third_party_networks_mode": 0,
+      "pers_ad_show_third_party_networks": false,
+      "pers_ad_main_mode_title": "Targeted ads",
+      "pa_revising_switch": false,
+      "show_advertiser_settings": true,
+      "disable_att_overwrite_pa": 1,
+      "is_show_settings": true,
+      "pers_ad_show_data_received_partner": false,
+      "pers_ad_show_interest_label": true,
+      "limit_ad_tracking": false,
+      "att_status": 255,
+      "is_np_user": 0,
+      "mode": 1,
+      "need_pop_up": false,
+      "is_follow_sys_config": false,
+      "description": "With this setting, the ads you see on TikTok can be more tailored to your interests based on data that advertising partners share with us about your activity on their apps and websites.\nYou will always see ads on TikTok based on what you do on TikTok or other data described in our privacy policy.",
+      "pers_ad_data_received_partner_mode": 0,
+      "pers_ad_show_third_part_measurement": false,
+      "is_teenager_mode": 0,
+      "is_new_user": 1,
+      "is_show_reset_entry": false,
+      "is_show_3p_data_control": false,
+      "enable_toggle_decoupling": true,
+      "consent_re_prompt_struct": {
+        "need_prompt": false,
+        "prompt_style": 0,
+        "prompt_video_count": 8
+      }
+    },
+    "parental_guardian_name": "Family Pairing",
+    "commercial_content_library_url": "https://www.tiktok.com/adlibrary",
+    "status_code": 0,
+    "policy_notice_enable": true,
+    "enable_geoblocking_experiment": false,
+    "policy_info_list": [
+      {
+        "policy_url": "https://www.tiktok.com/legal/privacy-policy",
+        "policy_key": "privacy-policy"
+      },
+      {
+        "policy_key": "terms-of-service",
+        "policy_url": "https://www.tiktok.com/legal/terms-of-service"
+      },
+      {
+        "policy_key": "tiktok-shoutouts-user-terms-of-service",
+        "policy_url": "https://www.tiktok.com/legal/tiktok-shoutouts-user-terms-of-service"
+      },
+      {
+        "policy_key": "cookie-policy",
+        "policy_url": "https://www.tiktok.com/legal/cookie-policy"
+      },
+      {
+        "policy_key": "virtual-items",
+        "policy_url": "https://www.tiktok.com/legal/virtual-items"
+      },
+      {
+        "policy_key": "rewards-policy-eea",
+        "policy_url": "https://www.tiktok.com/legal/rewards-policy-eea"
+      },
+      {
+        "policy_key": "privacy-policy-for-younger-users",
+        "policy_url": "https://www.tiktok.com/legal/privacy-policy-for-younger-users"
+      },
+      {
+        "policy_key": "copyright-policy",
+        "policy_url": "https://www.tiktok.com/legal/copyright-policy"
+      },
+      {
+        "policy_key": "changes-to-personalised-advertising-in-the-eea",
+        "policy_url": "https://www.tiktok.com/legal/changes-to-personalised-advertising-in-the-eea"
+      }
+    ],
+    "extra": {
+      "now": 1792317584000,
+      "fatal_item_ids": [],
+      "logid": "202610181759445CAA6F405E224509D834"
+    },
+    "log_pb": {
+      "impr_id": "202610181759445CAA6F405E224509D834"
+    },
+    "about_privacy_policy_url": "https://www.tiktok.com/legal/privacy-policy-row",
+    "cmpl_enc": "AgICA6gAFgkrPEDsvf3umVda3C9b0jgYUE9UBxfkTKXQPu6niDLZOfC1ARbVjD-FDmCkV6M",
+    "age_gate_info": {
+      "age_gate_post_action": 0,
+      "register_age_gate_action": 2,
+      "age_gate_action": 0
+    },
+    "device_limit_register_expired": true,
+    "interface_control_settings": "{\"use_new_control\":true,\"version\":\"11\",\"user_type\":\"-1\",\"rules\":null}",
+    "private_settings": {
+      "post_page": {
+        "stitch": {
+          "tips_type": 0,
+          "values": [
+            {
+              "value": 1,
+              "show_type": 0,
+              "res_type": 0
+            },
+            {
+              "value": 0,
+              "show_type": 0,
+              "res_type": 0
+            }
+          ],
+          "show_type": 0,
+          "res_type": 0
+        },
+        "duet": {
+          "tips_type": 0,
+          "values": [
+            {
+              "value": 1,
+              "show_type": 0,
+              "res_type": 0
+            },
+            {
+              "value": 0,
+              "show_type": 0,
+              "res_type": 0
+            }
+          ],
+          "show_type": 0,
+          "res_type": 0
+        }
+      },
+      "video_privacy": {
+        "duet": {
+          "show_type": 0,
+          "res_type": 0,
+          "tips_type": 0,
+          "values": [
+            {
+              "value": 1,
+              "show_type": 0,
+              "res_type": 0
+            },
+            {
+              "res_type": 0,
+              "value": 0,
+              "show_type": 0
+            }
+          ]
+        },
+        "stitch": {
+          "show_type": 0,
+          "res_type": 0,
+          "tips_type": 0,
+          "values": [
+            {
+              "value": 1,
+              "show_type": 0,
+              "res_type": 0
+            },
+            {
+              "value": 0,
+              "show_type": 0,
+              "res_type": 0
+            }
+          ]
+        }
+      },
+      "account": {
+        "filter_spam": {
+          "show_type": 0,
+          "res_type": 0,
+          "tips_type": 0,
+          "values": [
+            {
+              "show_type": 0,
+              "res_type": 0,
+              "value": 1
+            },
+            {
+              "value": 2,
+              "show_type": 0,
+              "res_type": 0
+            }
+          ]
+        },
+        "download": {
+          "show_type": 0,
+          "res_type": 0,
+          "tips_type": 0,
+          "values": [
+            {
+              "value": 0,
+              "show_type": 0,
+              "res_type": 0
+            },
+            {
+              "value": 3,
+              "show_type": 0,
+              "res_type": 0
+            }
+          ]
+        },
+        "sug_to_fb_friends": {
+          "show_type": 0,
+          "res_type": 0,
+          "tips_type": 0,
+          "values": [
+            {
+              "value": 1,
+              "show_type": 0,
+              "res_type": 0
+            },
+            {
+              "value": 2,
+              "show_type": 0,
+              "res_type": 0
+            }
+          ]
+        },
+        "sug_to_mutual_connections": {
+          "values": [
+            {
+              "show_type": 0,
+              "res_type": 0,
+              "value": 1
+            },
+            {
+              "show_type": 0,
+              "res_type": 0,
+              "value": 2
+            }
+          ],
+          "show_type": 0,
+          "res_type": 0,
+          "tips_type": 0
+        },
+        "group_chat": {
+          "show_type": 0,
+          "res_type": 0,
+          "tips_type": 0,
+          "values": [
+            {
+              "value": 1,
+              "show_type": 0,
+              "res_type": 0
+            },
+            {
+              "value": 2,
+              "show_type": 0,
+              "res_type": 0
+            }
+          ]
+        },
+        "following_visibility": {
+          "values": [
+            {
+              "value": 1,
+              "show_type": 0,
+              "res_type": 0
+            },
+            {
+              "value": 2,
+              "show_type": 0,
+              "res_type": 0
+            }
+          ],
+          "show_type": 0,
+          "res_type": 0,
+          "tips_type": 0
+        },
+        "sug_to_contacts": {
+          "show_type": 0,
+          "res_type": 0,
+          "tips_type": 0,
+          "values": [
+            {
+              "value": 1,
+              "show_type": 0,
+              "res_type": 0
+            },
+            {
+              "value": 2,
+              "show_type": 0,
+              "res_type": 0
+            }
+          ]
+        },
+        "sug_to_who_share_link": {
+          "res_type": 0,
+          "tips_type": 0,
+          "values": [
+            {
+              "value": 1,
+              "show_type": 0,
+              "res_type": 0
+            },
+            {
+              "value": 2,
+              "show_type": 0,
+              "res_type": 0
+            }
+          ],
+          "show_type": 0
+        },
+        "chatsets": {
+          "res_type": 0,
+          "tips_type": 0,
+          "values": [
+            {
+              "value": 1,
+              "show_type": 0,
+              "res_type": 0
+            },
+            {
+              "res_type": 0,
+              "value": 2,
+              "show_type": 0
+            },
+            {
+              "value": 3,
+              "show_type": 0,
+              "res_type": 0
+            }
+          ],
+          "show_type": 0
+        },
+        "favorite": {
+          "show_type": 0,
+          "res_type": 0,
+          "tips_type": 0,
+          "values": [
+            {
+              "res_type": 0,
+              "value": 0,
+              "show_type": 0
+            },
+            {
+              "value": 1,
+              "show_type": 0,
+              "res_type": 0
+            }
+          ]
+        },
+        "private_account": {
+          "show_type": 0,
+          "res_type": 0,
+          "tips_type": 0,
+          "values": [
+            {
+              "value": 1,
+              "show_type": 0,
+              "res_type": 0
+            },
+            {
+              "show_type": 0,
+              "res_type": 0,
+              "value": 0
+            }
+          ]
+        },
+        "hide_search": {
+          "values": [
+            {
+              "show_type": 0,
+              "res_type": 0,
+              "value": 1
+            },
+            {
+              "value": 0,
+              "show_type": 0,
+              "res_type": 0
+            }
+          ],
+          "show_type": 0,
+          "res_type": 0,
+          "tips_type": 0
+        },
+        "duet": {
+          "values": [
+            {
+              "value": 0,
+              "show_type": 0,
+              "res_type": 0
+            },
+            {
+              "value": 1,
+              "show_type": 0,
+              "res_type": 0
+            },
+            {
+              "res_type": 0,
+              "value": 3,
+              "show_type": 0
+            }
+          ],
+          "show_type": 0,
+          "res_type": 0,
+          "tips_type": 0
+        },
+        "stitch": {
+          "show_type": 0,
+          "res_type": 0,
+          "tips_type": 0,
+          "values": [
+            {
+              "value": 0,
+              "show_type": 0,
+              "res_type": 0
+            },
+            {
+              "value": 1,
+              "show_type": 0,
+              "res_type": 0
+            },
+            {
+              "value": 3,
+              "show_type": 0,
+              "res_type": 0
+            }
+          ]
+        },
+        "comment": {
+          "tips_type": 0,
+          "values": [
+            {
+              "value": 0,
+              "show_type": 0,
+              "res_type": 0
+            },
+            {
+              "value": 1,
+              "show_type": 0,
+              "res_type": 0
+            },
+            {
+              "value": 3,
+              "show_type": 0,
+              "res_type": 0
+            }
+          ],
+          "show_type": 0,
+          "res_type": 0
+        },
+        "sug_to_interested_users": {
+          "tips_type": 0,
+          "values": [
+            {
+              "value": 1,
+              "show_type": 0,
+              "res_type": 0
+            },
+            {
+              "show_type": 0,
+              "res_type": 0,
+              "value": 2
+            }
+          ],
+          "show_type": 0,
+          "res_type": 0
+        }
+      }
+    },
+    "idfa_popup_allow": false
+  }
+}

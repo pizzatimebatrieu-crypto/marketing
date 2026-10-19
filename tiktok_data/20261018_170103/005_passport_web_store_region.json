@@ -1,0 +1,11 @@
+{
+  "url": "https://login-us.www.tiktok.com/passport/web/store_region/?aid=1988&app_language=en&app_name=tiktok_web&browser_language=en-US&browser_name=Mozilla&browser_online=true&browser_platform=Linux%20x86_64&browser_version=5.0%20%28X11%3B%20Linux%20x86_64%29%20AppleWebKit%2F537.36%20%28KHTML%2C%20like%20Gecko%29%20Chrome%2F156.0.0.0%20Safari%2F537.36&channel=tiktok_web&cookie_enabled=true&data_collection_enabled=false&device_id=7697944949812299271&device_platform=web_pc&focus_state=true&from_page=&history_len=3&is_fullscreen=false&is_page_visible=true&os=linux&priority_region=&referer=https%3A%2F%2Fwww.tiktok.com%2Ftiktokstudio%2Fanalytics&region=VN&root_referer=https%3A%2F%2Fwww.tiktok.com%2Ftiktokstudio%2Fanalytics&screen_height=900&screen_width=1400&tz_name=Asia%2FSaigon&user_is_login=false&webcast_language=en&X-Dynosaur=Ma5zlVsnTBSoveaN/lVhkbVygri1EERD7mHCLaq69bcyOeZ65uWxCPFlR8xlyCvIbxY8ZsZV0ej2NWO4wLGhIBuWyLWx0lBYWage74RqK39AeOW9Di2McLH-yI2EAvqyv7f20C/Vj/yNQnkM6Nk-kEAye7/uRVDWByVsZ0v-xbIJ/V3jnlNfKGMPyfQJLh8O239AX8IhWB0rGPmNahwGKpTAKN2kMvP8f-DceVShkbDYQugLAhOErfvw4cXC-ZbhjEv/y0w-VL6NG55o4mhVzF8BxaUe/gUEXqNA/lbBPEX89EfcdJPpzQ9laUrZOaxRU2pDmxMFzeBreC6Xh-llUiCkA/O2l-C1RU/odnlQD-UONrtefBahleJB06WrkwXJkvxcmtR2SCquLkGRpneE5fCGOOmW&msToken=zfwFP3fPsF0myjNG6SF2hWn7ODDUSR6YC0tMWD23AsUxjYcusr7odxfHxtDFz0hrD4LKwGoN89xMYaWjStdRh6yf2EadJcuNrnhuwLJqQAkN28gUq7F0sEs6CgJ3UeOUDlhKWoDtYzr_icoJmdVbQqvLhpuMo8q8rUIVFuq-&X-Bogus=1&X-Gnarly=M5j8aivNPBPGVuBHq/0qnEIi4AmC4X2M1r6i55GFGV2t9OSXKan0izCz5SYMOU3kkcIz83VFmLlCcX9lJBpz7YWYI1HdafRiyTsvpG/wZSmn6y-Vv7nv7/ccW78dkNpGBRZvmDvv7IbCJqbwcsIPgVfG-JBqpeKfaYPAPgLCp2GLJxRNF45KyzTdcu5I9XX5WpSHD/0eRb0NbA5G3QDj4wPuWo9VwMdf0lHnnAA0KflsENfV4tup6uitQqINQXKNvS-ZQziN-vDnub9c6FYamxj5ASnHcbMAdpGNMIYuIEm5FF/oRDOC8Wkdc5O35Tb5XIPv/X2gwMFp",
+  "data": {
+    "data": {
+      "enabled_region_option": true,
+      "localized_country_name": "Vietnam",
+      "store_region": "vn"
+    },
+    "message": "success"
+  }
+}

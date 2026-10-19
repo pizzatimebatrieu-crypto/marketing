@@ -1,5 +1,5 @@
 {
   "functions": {
-    "index.py": { "includeFiles": "static/**" }
+    "index.py": { "includeFiles": "{static,data,tai_data_fb}/**" }
   }
 }
