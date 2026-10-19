@@ -1,10 +1,10 @@
 """
-Day data/data-tiktok.csv (xuat tu TikTok Studio) len bang tiktok_daily tren Supabase.
+Day data/tiktok-data.csv (xuat tu TikTok Studio) len bang tiktok_daily tren Supabase.
 
 Cach dung:
     python data/upload_tiktok.py [duong_dan_file.csv]
 
-Mac dinh doc data/data-tiktok.csv (cung thu muc voi script). Ngay da co se duoc cap nhat, ngay moi se duoc them
+Mac dinh doc data/tiktok-data.csv (cung thu muc voi script). Ngay da co se duoc cap nhat, ngay moi se duoc them
 (khong xoa du lieu cu). Can chay supabase_tiktok.sql 1 lan truoc.
 """
 import os
@@ -30,8 +30,7 @@ def main():
     rows = tiktok.parse_csv(path, today)
     if not rows:
         sys.exit(f"Khong doc duoc dong nao tu {path}")
-    payload = [{"day": r["date"].isoformat(), "video_views": r["views"], "profile_views": r["profile"],
-                "likes": r["likes"], "comments": r["comments"], "shares": r["shares"]} for r in rows]
+    payload = tiktok.to_db(rows)
     r = requests.post(f"{URL}/rest/v1/tiktok_daily", timeout=30, params={"on_conflict": "day"},
                       headers={"apikey": KEY, "Authorization": f"Bearer {KEY}",
                                "Content-Type": "application/json",

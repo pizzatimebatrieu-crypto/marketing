@@ -258,6 +258,29 @@ def tiktok_summary(days: int = 30, start: date | None = None, end: date | None =
     return cached(("tiktok", days, start, end, today), load)
 
 
+@app.post("/api/tiktok/upload", dependencies=[Depends(require_user)])
+async def tiktok_upload(request: Request):
+    """Nhan noi dung file CSV TikTok Studio (body thuan), upsert vao tiktok_daily."""
+    body = await request.body()
+    if len(body) > 2_000_000:
+        raise HTTPException(413, "File qua lon")
+    try:
+        text = body.decode("utf-8-sig")
+    except UnicodeDecodeError:
+        raise HTTPException(400, "File khong phai CSV UTF-8")
+    rows = tiktok.parse_text(text, datetime.now(agg.VN).date())
+    if not rows:
+        raise HTTPException(400, "Khong doc duoc dong nao. Kiem tra file CSV tu TikTok Studio (ngay tieng Viet)")
+    r = requests.post(f"{SB_URL}/rest/v1/tiktok_daily", timeout=30, params={"on_conflict": "day"},
+                      headers={**SB_HEADERS, "Content-Type": "application/json",
+                               "Prefer": "resolution=merge-duplicates,return=minimal"},
+                      json=tiktok.to_db(rows))
+    if r.status_code >= 300:
+        raise HTTPException(502, f"Supabase tiktok_daily: {r.status_code} {r.text[:200]}")
+    _cache.clear()
+    return {"ok": True, "days": len(rows), "from": rows[0]["date"].isoformat(), "to": rows[-1]["date"].isoformat()}
+
+
 @app.get("/api/post/{post_id}", dependencies=[Depends(require_user)])
 def post_trend(post_id: str):
     if not re.fullmatch(r"[0-9_]{5,64}", post_id):

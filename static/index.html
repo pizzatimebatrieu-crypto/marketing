@@ -69,6 +69,7 @@
     <input type="date" id="dFrom"> – <input type="date" id="dTo"> <button id="dGo" style="background:var(--c1);color:#fff;border-radius:6px">Xem</button>
   </div>
   <div class="seg"><button id="sync">⟳ Cập nhật</button></div>
+  <input type="file" id="ttfile" accept=".csv,text/csv" style="display:none">
   <div class="seg"><button id="back">← Chọn trang</button><button id="logout">Đăng xuất</button></div>
 </header>
 <div id="err" style="max-width:1100px;margin:8px auto;padding:0 16px"></div>
@@ -216,7 +217,8 @@ function openPage(key) {
   $("#pick").style.display = "none"; $("#app").style.display = "";
   const ok = cur.configured, tt = key === "tiktok";
   $("#asof").textContent = "";
-  $("#sync").parentElement.style.display = ok && !tt ? "" : "none";
+  $("#sync").parentElement.style.display = ok ? "" : "none";
+  $("#sync").title = tt ? "Chọn file CSV tải từ TikTok Studio" : "";
   $("#main").style.display = ok && !tt ? "" : "none";
   $("#ttmain").style.display = ok && tt ? "" : "none";
   $("#range").style.display = ok ? "" : "none";
@@ -227,7 +229,22 @@ function openPage(key) {
 }
 $("#opts").onclick = e => { const b = e.target.closest("button"); if (b) openPage(b.dataset.k); };
 $("#back").onclick = showPicker;
+$("#ttfile").onchange = async e => {
+  const f = e.target.files[0]; e.target.value = "";
+  if (!f) return;
+  const b = $("#sync"), label = b.textContent;
+  b.disabled = true; b.textContent = "Đang tải lên…"; $("#err").textContent = "";
+  try {
+    const r = await fetch("/api/tiktok/upload", { method: "POST", credentials: "same-origin",
+      headers: { "Content-Type": "text/csv" }, body: f });
+    if (r.status === 401) { location.href = "/login"; return; }
+    if (!r.ok) { let m = r.statusText; try { m = (await r.json()).detail || m; } catch (e) {} throw new Error(m); }
+    await load();
+  } catch (e) { $("#err").textContent = "Lỗi cập nhật: " + e.message; }
+  b.disabled = false; b.textContent = label;
+};
 $("#sync").onclick = async () => {
+  if (page === "tiktok") { $("#ttfile").click(); return; }
   const b = $("#sync"), label = b.textContent;
   b.disabled = true; b.textContent = "Đang cập nhật…"; $("#err").textContent = "";
   try {

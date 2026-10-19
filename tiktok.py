@@ -1,10 +1,11 @@
-"""Doc data/data-tiktok.csv (xuat tu TikTok Studio) de day len Supabase, va tinh so lieu tong hop."""
+"""Doc data/tiktok-data.csv (xuat tu TikTok Studio) de day len Supabase, va tinh so lieu tong hop."""
 import csv
+import io
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 
 VN = timezone(timedelta(hours=7))
-CSV_PATH = Path(__file__).parent / "data" / "data-tiktok.csv"
+CSV_PATH = Path(__file__).parent / "data" / "tiktok-data.csv"
 MONTHS = {"Một": 1, "Hai": 2, "Ba": 3, "Tư": 4, "Năm": 5, "Sáu": 6, "Bảy": 7,
           "Tám": 8, "Chín": 9, "Mười": 10, "Mười Một": 11, "Mười Hai": 12}
 WEEKDAYS = ["Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7", "Chủ nhật"]
@@ -19,15 +20,25 @@ def _int(x):
 
 
 def parse_csv(path: Path, today: date) -> list[dict]:
+    with open(path, encoding="utf-8-sig", newline="") as f:
+        return parse_text(f.read(), today)
+
+
+def to_db(rows: list[dict]) -> list[dict]:
+    """Dong parse_csv -> dong cua bang tiktok_daily (Supabase)."""
+    return [{"day": r["date"].isoformat(), "video_views": r["views"], "profile_views": r["profile"],
+             "likes": r["likes"], "comments": r["comments"], "shares": r["shares"]} for r in rows]
+
+
+def parse_text(text: str, today: date) -> list[dict]:
     """File khong ghi nam: dong cuoi la ngay moi nhat (khong sau hom nay), lui dan de suy ra nam."""
     raw = []
-    with open(path, encoding="utf-8-sig", newline="") as f:
-        for r in csv.DictReader(f):
-            d, _, m = (r.get("Date") or "").strip().partition(" tháng ")
-            if not d.isdigit() or m.strip() not in MONTHS:
-                continue
-            raw.append((MONTHS[m.strip()], int(d), [_int(r.get(k)) for k in
-                        ("Video Views", "Profile Views", "Likes", "Comments", "Shares")]))
+    for r in csv.DictReader(io.StringIO(text.lstrip("\ufeff"))):
+        d, _, m = (r.get("Date") or "").strip().partition(" tháng ")
+        if not d.isdigit() or m.strip() not in MONTHS:
+            continue
+        raw.append((MONTHS[m.strip()], int(d), [_int(r.get(k)) for k in
+                    ("Video Views", "Profile Views", "Likes", "Comments", "Shares")]))
     if not raw:
         return []
     month, day, _ = raw[-1]
